@@ -31,7 +31,8 @@ import type { CastariClientOptions } from './types.js'
  */
 export class CastariClient {
   private httpClient: HttpClient
-  private initialized = false
+  private authInitialized = false
+  private urlInitialized = false
   private initPromise: Promise<void> | null = null
 
   /** API for managing agents */
@@ -56,10 +57,15 @@ export class CastariClient {
     // Set auth if provided directly
     if (options.apiKey) {
       this.httpClient.setAuth('api_key', options.apiKey)
-      this.initialized = true
+      this.authInitialized = true
     } else if (options.token) {
       this.httpClient.setAuth('token', options.token)
-      this.initialized = true
+      this.authInitialized = true
+    }
+
+    // Mark URL as initialized if provided directly
+    if (options.baseUrl) {
+      this.urlInitialized = true
     }
 
     // Initialize API classes
@@ -69,11 +75,12 @@ export class CastariClient {
   }
 
   /**
-   * Initialize the client by loading credentials from config
+   * Initialize the client by loading credentials and URL from config
    * This is called automatically before the first API request
    */
   private async initialize(): Promise<void> {
-    if (this.initialized) return
+    // Return early only if both auth and URL are already initialized
+    if (this.authInitialized && this.urlInitialized) return
 
     // If already initializing, wait for it
     if (this.initPromise) {
@@ -86,21 +93,21 @@ export class CastariClient {
   }
 
   private async doInitialize(): Promise<void> {
-    // Load base URL from config/env if not provided
-    if (!this.options.baseUrl) {
+    // Load base URL from config/env if not provided directly
+    if (!this.urlInitialized) {
       const apiUrl = await getApiUrl()
       this.httpClient.setBaseUrl(apiUrl)
+      this.urlInitialized = true
     }
 
-    // Load auth from config if not provided
-    if (!this.options.apiKey && !this.options.token) {
+    // Load auth from config if not provided directly
+    if (!this.authInitialized) {
       const auth = await getAuth()
       if (auth) {
         this.httpClient.setAuth(auth.type, auth.value)
       }
+      this.authInitialized = true
     }
-
-    this.initialized = true
   }
 
   /**

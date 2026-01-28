@@ -86,6 +86,12 @@ export class CastariClient {
   }
 
   private async doInitialize(): Promise<void> {
+    // Load base URL from config/env if not provided
+    if (!this.options.baseUrl) {
+      const apiUrl = await getApiUrl()
+      this.httpClient.setBaseUrl(apiUrl)
+    }
+
     // Load auth from config if not provided
     if (!this.options.apiKey && !this.options.token) {
       const auth = await getAuth()

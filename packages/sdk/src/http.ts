@@ -40,6 +40,13 @@ export class HttpClient {
   }
 
   /**
+   * Set the base URL for API requests
+   */
+  setBaseUrl(url: string): void {
+    this.baseUrl = url.replace(/\/$/, ''); // Remove trailing slash
+  }
+
+  /**
    * Make an HTTP request to the API
    */
   async request<T>(

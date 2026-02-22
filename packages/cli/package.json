@@ -1,6 +1,6 @@
 {
   "name": "@castari/cli",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Castari CLI - Deploy AI agents with one command",
   "author": "Castari <founders@castari.com>",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "node -e \"if (!process.env.npm_execpath?.includes('pnpm')) { console.error('Use pnpm publish or changeset publish — npm publish will not resolve workspace: protocol'); process.exit(1); }\""
   },
   "dependencies": {
     "@castari/sdk": "workspace:*",

@@ -60,7 +60,7 @@ export function keyValue(key: string, value: string | number | undefined): void 
  * Format a number with commas
  */
 export function formatNumber(n: number): string {
-  return n.toLocaleString();
+  return n.toLocaleString('es-US');
 }
 
 /**

@@ -17,6 +17,7 @@ import { mountsCommand } from './commands/mounts.js';
 import { filesCommand } from './commands/files.js';
 import { sessionsCommand } from './commands/sessions.js';
 import { invocationsCommand } from './commands/invocations.js';
+import { registerEvalCommand, registerEvalInitCommand } from './commands/eval.js';
 
 const require = createRequire(import.meta.url);
 const { version } = require('../package.json') as { version: string };
@@ -61,6 +62,10 @@ program.addCommand(filesCommand);
 // Sessions & Invocations
 program.addCommand(sessionsCommand);
 program.addCommand(invocationsCommand);
+
+// Eval
+registerEvalCommand(program);
+registerEvalInitCommand(program);
 
 // Parse arguments
 program.parse();
